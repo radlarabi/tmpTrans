@@ -1,0 +1,22 @@
+{
+    "users":[
+        {
+            "name":"El Mustapha Ej Jamaay",
+            "login":"eej-jama",
+            "profile":"https://cdn.intra.42.fr/users/9a292231d27696fd7a9e24ae204f6838/eej-jama.JPG",
+            "isOnline":"yes"
+        },
+        {
+            "name":"Hassan Lakhal",
+            "login":"hlakhal-",
+            "profile":"https://cdn.intra.42.fr/users/3de3b1e10b90dd7efb1cc05ac0cee75c/hlakhal-.JPG",
+            "isOnline":"no"
+        },
+        {
+            "name":"Mohamed Aneddame",
+            "login":"maneddam",
+            "profile":"https://cdn.intra.42.fr/users/823573c65a63e6a8d2f9ad00030da9da/maneddam.JPG",
+            "isOnline":"yes"
+        }
+    ]
+}

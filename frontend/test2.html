@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Doughnut Chart Example</title>
+		<style>
+			.root{
+				width: 503px;
+				height: 523px;
+				color: white;
+				/* background-color: #21264dc0 */
+			}      
+			.notification{
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 4rem;
+				width: 25rem;
+				border-radius: 8px;
+				border-left: 3px solid #0a77bf;
+			}
+            /* notification.style.backgroundImage = 'liniar-gradient(to right, #0abf3055, #22242f 30%)' */
+
+		</style> 
+	</head>
+	<body>
+		<div class="root">
+			<div class="notification">
+				<h1>Notification</h1>
+			</div>
+		</div>
+		<script>
+			const notification = document.querySelector('.notification');
+			notification.style.backgroundImage = 'linear-gradient(to right, #0a77bfbb, #22242faa 95%)';
+		</script>
+	</body>
+</html>

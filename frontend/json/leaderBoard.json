@@ -1,0 +1,82 @@
+{
+    "users":[
+        {
+            "name":"El Mustapha Ej Jamaay",
+            "login":"eej-jama",
+            "profile":"https://cdn.intra.42.fr/users/9a292231d27696fd7a9e24ae204f6838/eej-jama.JPG",
+            "score":"1450"
+        },
+        {
+            "name":"Hassan Lakhal",
+            "login":"hlakhal-",
+            "profile":"https://cdn.intra.42.fr/users/3de3b1e10b90dd7efb1cc05ac0cee75c/hlakhal-.JPG",
+            "score":"2634"
+        },
+        {
+            "name":"Mohamed Aneddame",
+            "login":"maneddam",
+            "profile":"https://cdn.intra.42.fr/users/823573c65a63e6a8d2f9ad00030da9da/maneddam.JPG",
+            "score":"1308"
+        },
+        {
+            "name":"Mohamed Aneddame",
+            "login":"maneddam",
+            "profile":"https://cdn.intra.42.fr/users/823573c65a63e6a8d2f9ad00030da9da/maneddam.JPG",
+            "score":"1308"
+        },
+        {
+            "name":"Radouan Larabi",
+            "login":"rlarabi",
+            "profile":"https://cdn.intra.42.fr/users/91928f65e90a7ab7489be925389363f5/rlarabi.JPG",
+            "score":"1529"
+        },
+        {
+            "name":"Mohamed Aneddame",
+            "login":"maneddam",
+            "profile":"https://cdn.intra.42.fr/users/823573c65a63e6a8d2f9ad00030da9da/maneddam.JPG",
+            "score":"1308"
+        },
+        {
+            "name":"Mohamed Aneddame",
+            "login":"maneddam",
+            "profile":"https://cdn.intra.42.fr/users/823573c65a63e6a8d2f9ad00030da9da/maneddam.JPG",
+            "score":"1308"
+        },
+        {
+            "name":"Mohamed Aneddame",
+            "login":"maneddam",
+            "profile":"https://cdn.intra.42.fr/users/823573c65a63e6a8d2f9ad00030da9da/maneddam.JPG",
+            "score":"1308"
+        },
+        {
+            "name":"Mohamed Aneddame",
+            "login":"maneddam",
+            "profile":"https://cdn.intra.42.fr/users/823573c65a63e6a8d2f9ad00030da9da/maneddam.JPG",
+            "score":"1308"
+        },
+        {
+            "name":"Mohamed Aneddame",
+            "login":"maneddam",
+            "profile":"https://cdn.intra.42.fr/users/823573c65a63e6a8d2f9ad00030da9da/maneddam.JPG",
+            "score":"1308"
+        },
+        {
+            "name":"Mohamed Aneddame",
+            "login":"maneddam",
+            "profile":"https://cdn.intra.42.fr/users/823573c65a63e6a8d2f9ad00030da9da/maneddam.JPG",
+            "score":"1308"
+        },
+        {
+            "name":"Mohamed Aneddame",
+            "login":"maneddam",
+            "profile":"https://cdn.intra.42.fr/users/823573c65a63e6a8d2f9ad00030da9da/maneddam.JPG",
+            "score":"1308"
+        },
+        {
+            "name":"Mohamed Aneddame",
+            "login":"maneddam",
+            "profile":"https://cdn.intra.42.fr/users/823573c65a63e6a8d2f9ad00030da9da/maneddam.JPG",
+            "score":"1308"
+        }
+    ]
+}

@@ -1,0 +1,106 @@
+# Tournament API Documentation
+
+## 1. Tournament Management
+
+### a. Create a Tournament
+
+**Endpoint:**  
+`POST /api/tournaments/`
+
+**Description:**  
+This endpoint is used to create a new tournament.
+
+**Example Request:**
+```json
+POST http://localhost:8001/api/tournaments/
+```
+
+**Request Body:**
+```json
+{
+    "name": "Asatir4",
+    "start_date": "2024-09-01",
+    "end_date": "2024-10-05"
+}
+```
+
+### b. List Tournaments
+
+**Endpoint:**  
+`GET /api/tournaments/categorize_tournaments/`
+
+**Description:**  
+This endpoint lists all active tournaments. You can filter tournaments based on their status.
+
+**Example Request:**
+```json
+GET http://localhost:8001/api/tournaments/categorize_tournaments/
+```
+
+**Query Parameters:**
+- `status`: The status of the tournament (e.g., `active`).
+
+---
+
+## 2. Player Registration in a Tournament
+
+**Endpoint:**  
+`POST /api/tournaments/{tournament_name}/register/`
+
+**Description:**  
+This endpoint allows players to register for a specific tournament.
+
+**Example Request:**
+```json
+POST http://localhost:8001/api/tournaments/Asatir4/register/
+```
+
+**Request Body:**
+```json
+{
+    "username": "{username of player}"
+}
+```
+
+---
+
+## 3. Starting a Tournament and Creating Matches
+
+**Endpoint:**  
+`POST /api/tournaments/{tournament_name}/start/`
+
+**Description:**  
+This endpoint starts the tournament and automatically creates matches between registered players.
+
+**Example Request:**
+```json
+POST http://localhost:8001/api/tournaments/Asatir4/start/
+```
+
+**Request Body:**  
+No data is required for this request.
+
+---
+
+Here's the updated section for the next round of the tournament:
+
+---
+
+## 4. Next Round of the Tournament
+
+**Endpoint:**  
+`POST /api/tournaments/{tournament_name}/next_round/`
+
+**Description:**  
+This endpoint progresses the tournament to the next round, pairing up players who have advanced. 
+
+**Example Request:**
+```json
+POST http://localhost:8001/api/tournaments/Asatir/next_round/
+```
+
+**Request Body:**  
+No data is required for this request.
+
+---
+
