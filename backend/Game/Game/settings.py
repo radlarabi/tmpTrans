@@ -16,28 +16,34 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^f@d_y65p+az^s+1%8xv34!yg_wz4c1yy*g@0o6jo^cgu=hi-8'
+SECRET_KEY = 'django-insecure-sh2il-vx=r!+2%dsi7=64&+sdfpa9i0cjsgv-^^4pry)*b&umj'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
-
+SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'appgame',
+    'channels',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'appgame',
 ]
 
 MIDDLEWARE = [
@@ -51,6 +57,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'Game.urls'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
 
 TEMPLATES = [
     {
@@ -70,6 +83,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Game.wsgi.application'
 
+ASGI_APPLICATION = 'Game.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -92,6 +106,48 @@ DATABASES = {
 		'HOST': 'database',
 		'PORT': '5432'
 	}
+}
+
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+	"ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+	"REFRESH_TOKEN_LIFETIME": timedelta(days=90),
+	"ROTATE_REFRESH_TOKENS": True,
+	"BLACKLIST_AFTER_ROTATION": True,
+	"UPDATE_LAST_LOGIN": False,
+
+	"ALGORITHM": "HS256",
+	"VERIFYING_KEY": "",
+	"AUDIENCE": None,
+	"ISSUER": None,
+	"JSON_ENCODER": None,
+	"JWK_URL": None,
+	"LEEWAY": 0,
+
+	"AUTH_HEADER_TYPES": ("Bearer",),
+	"AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+	"USER_ID_FIELD": "id",
+	"USER_ID_CLAIM": "user_id",
+	"USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+
+	"AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+	"TOKEN_TYPE_CLAIM": "token_type",
+	"TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
+
+	"JTI_CLAIM": "jti",
+
+	"SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+	"SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
+	"SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+
+	"TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
+	"TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
+	"TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
+	"TOKEN_BLACKLIST_SERIALIZER": "rest_framework_simplejwt.serializers.TokenBlacklistSerializer",
+	"SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
+	"SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
 
