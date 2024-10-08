@@ -25,7 +25,7 @@ def get_data_user_form_api(token):
             'Authorization': f'Bearer {token}',
             'Content-Type': 'application/json'
         }
-        response = requests.get("http://auth:8000/profile/details/",headers=headers)
+        response = requests.get("http://auth:8000/api/profile/details/",headers=headers)
         if response.status_code == 200:
             res = json.loads(response.text)
             return res

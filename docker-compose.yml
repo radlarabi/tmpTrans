@@ -58,21 +58,21 @@ services:
     restart: always
 
 
-  # game:
-  #   build: ./backend/Game/
-  #   image: game
-  #   container_name: game
-  #   ports:
-  #     - "8001:8001"
-  #   volumes:
-  #     - ./backend/Game:/Game/
-  #   depends_on:
-  #     - database
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - mynetwork
-  #   restart: always
+  game:
+    build: ./backend/Game/
+    image: game
+    container_name: game
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./backend/Game:/Game/
+    depends_on:
+      - database
+    env_file:
+      - .env
+    networks:
+      - mynetwork
+    restart: always
 
 
   frontend:
