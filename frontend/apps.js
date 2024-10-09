@@ -3,7 +3,7 @@ import { home } from './pages/home.js';
 import {callPages, getCookie} from './layers.js';
 import { login } from './pages/login.js';
 import { animatedBackground } from './utils/backgroundAnimation.js';
-
+import { findOpponent } from './game/main.js'
 const rootDiv = document.getElementById('root');
 
 const randomData = {
@@ -63,7 +63,7 @@ const router = async (e) => {
     if (url !== '' && url !== '/')
         animatedBackground()
    
-    if (routes.includes(url) || url.startsWith('/profile')) {
+    if (routes.includes(url) || url.startsWith('/profile') || url.startsWith('/game')) {
         const html = await callPages(url);
         rootDiv.innerHTML = html;
         if (document.getElementById("chart")) {
@@ -77,7 +77,10 @@ const router = async (e) => {
         rootDiv.innerHTML = _404();
 
     console.log("router called")
-    setInterval(() => {
+    if (window.location.hash == "#/game/findOpponent"){
+        findOpponent()
+    }
+    setTimeout(() => {
         document.getElementById('loading').style.display = 'none';
     } , 1500)
 }

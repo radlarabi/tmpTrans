@@ -9,6 +9,7 @@ class Player(models.Model):
     wins = models.IntegerField(default=0)
     losts = models.IntegerField(default=0)
     isactive = models.BooleanField(default=False)
+    avatar = models.CharField(max_length=255, default='/assets/images/default.webp')
     
     # New fields for remote gameplay and tournament participation
     is_remote = models.BooleanField(default=False)  

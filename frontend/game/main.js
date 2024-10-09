@@ -1,6 +1,6 @@
 import  { drawGame } from "./drawGame.js";
 
-const display = document.getElementById("friend");
+// const display = document.getElementById("friend");
 
 let currentIndex = 0;
 
@@ -125,7 +125,7 @@ function startGame(data) {
     });
 }
 
-console.log(display);
+// console.log(display);
 export function getCookie(name) {
     const nameEQ = name + "=";
     const cookiesArray = document.cookie.split(';');
@@ -140,12 +140,13 @@ export function getCookie(name) {
     return null;
 }
 
-document.addEventListener('click', (e) => {
-    if (e.target.id === 'friend') {
-        const displayWait = document.querySelector(".wait");
-    const dispalySection = document.querySelector(".section");
-    displayWait.classList.add('dispaly');
-    dispalySection.classList.add('dispaly');
+export function findOpponent () {
+
+    const displayWait = document.querySelector(".wait");
+    console.log("displayWaitdisplayWaitdisplayWait", displayWait)
+    const displaySection = document.querySelector(".section");
+    displayWait.classList.add('display');
+    displaySection.classList.add('display');
     // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI3OTY1OTE3LCJpYXQiOjE3Mjc4Nzk1MTcsImp0aSI6IjBhOTMzNWM2YzY1ZDQ2MmJiYjZlMmMyOTQ4OTA5NTUwIiwidXNlcl9pZCI6Mn0.k0iwyKCMm84WO-6-_z9F23Usr6MJgEGkE9GUpkedYEQ';
     document.cookie = 'Authorization=' + `Bearer ${getCookie('token')}` + '; path=/'; // Set the token in cookies
     const matchmaking = new WebSocket(
@@ -165,28 +166,28 @@ document.addEventListener('click', (e) => {
             const op = document.getElementById("waiting_status");
             namePlayer.innerHTML = `
                 <div class="img_pro">
-                    <img  class="" src="${"/remoteGame/"+ data.player.avatar}" />
+                    <img  class="" src="${data.player.avatar}" />
                 </div>
                 <h3>${data.player.username}</h3>
             `;
             op.innerHTML = `
                 <div class="spinner"></div>
             `;
-            console.log(data.player.avatar);
+            console.log(data.player);
         }
         else if (data.status == 'match_found') {
             const namePlayer = document.getElementById("player");
             const op = document.getElementById("waiting_status");
             namePlayer.innerHTML = 
             `   <div class="img_pro">
-                    <img  class="" src="${data.avatar_user}" />
+                    <img  class="" src="${data.avatar}" />
                 </div>
                 <h3>${data.player.username}</h3>
             `;
             // console.log(data.avatar_user);
             op.innerHTML = `
             <div class="img_pro">
-                <img  class="" src="${data.opponent_avatar}" />
+                <img  class="" src="${data.avatar}" />
             </div>
             <h3>${data.opponent.username}</h3>
             `;
@@ -214,32 +215,12 @@ document.addEventListener('click', (e) => {
                         }
                 }, 5000);
             }
-
-
-
-
         }
-        // const section = document.querySelector(".box");
-        // const infoPlayers = document.querySelector(".infoPlayers");
-        // let gameCanvas = document.getElementById("gameCanvas");
-        // if (section) {
-        //     const display = document.getElementsByClassName("playerInfo");
-        //     for (let i = 0; i < display.length; i++) {
-        //         display[i].classList.add('display');
-        //     }
-        //     section.style.display = 'none';
-        //     gameCanvas.style.display = 'block';
-        //     infoPlayers.classList.add('display');
-        //     gameCanvas.classList.add('block-1');
-        //     console.log("start game");
-        //     startGame(data);
-        //     }
     };
     matchmaking.onclose = function (e) {
         'ws://' + window.location.hostname + ':8000/ws/wait_for_opponent/'
-    }
-    }
-})
+    }   
+}
 // display.addEventListener('click',function () {
     
     

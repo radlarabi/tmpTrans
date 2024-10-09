@@ -24,6 +24,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         if user_id != AnonymousUser():
             try:
                 user_data = self.scope['user_data']
+                logger.error(f'{user_data}\n\n\n')
                 self.player = await self.create_player(user_data,user_id)
                 await self.accept()
                 if not self.player.isactive:
@@ -43,7 +44,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             await self.close()
 
     async def disconnect(self, close_code):
-        if self.scope["user"] != AnonymousUser() and getattr(self, 'player', None) and self.player.isactive:
+        if self.scope["user"] != AnonymousUser():
             try:
                 self.player.isactive = False
                 await sync_to_async(self.player.save)()
@@ -66,13 +67,14 @@ class GameConsumer(AsyncWebsocketConsumer):
                     try:
                         opponent = await sync_to_async(Player.objects.get)(id=int(opponent_id))
                         await self.start_game(opponent)
-                        await self.close()
+                        # await self.close()
                     except Player.DoesNotExist:
                         await self.send(text_data=json.dumps({
                             'status': 'error',
                             'message': 'Opponent not found.',
                         }))
                 else:
+                    
                     await self.add_player_to_queue()
                     await self.send_waiting_status()
         except json.JSONDecodeError:
@@ -110,6 +112,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def add_player_to_queue(self):
         async with queue_lock:
+            # logger.error(f"----{self.scope['user_data']}----")
             if self.player.id not in matchmaking_queue:
                 matchmaking_queue.append(self.player.id)
                 logger.error(f"Player {self.player.id} added to the queue. Current queue: {matchmaking_queue}")
@@ -145,8 +148,13 @@ class GameConsumer(AsyncWebsocketConsumer):
             opponent_data = PlayerSerializer(opponent).data
             player_data = PlayerSerializer(self.player).data
             await self.send_match_found(room_name, opponent_data)
-
-           
+            logger.error(f"--------{player_data}------------")
+            matchmaking_queue.remove(self.player.id)
+            # matchmaking_queue.remove(opponent.id)
+            
+            # remove playeras  is matching from the queue
+            
+            
             
             logger.error(f"Sending match found event to group 'player_{opponent.id}'")
             await self.channel_layer.group_send(

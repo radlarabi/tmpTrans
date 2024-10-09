@@ -117,11 +117,6 @@ class UserDetailsView(generics.RetrieveAPIView):
 	def get_object(self):
 		return self.request.user
 
-	# def get_username(self, obj):
-	# 	logger.error('\n\nhahahahahha\n\n')
-	# 	if obj.avatar:
-	# 		return obj.avatar.url  # This returns the relative URL (e.g., /media/avatars/profile.jpg)
-	# 	return None
 
 	def get(self, request, *args, **kwargs):
 		instance = self.get_object()

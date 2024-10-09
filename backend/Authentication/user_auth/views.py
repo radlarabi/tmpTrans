@@ -78,6 +78,7 @@ def registerUser(request):
 								'refresh': str(refresh),
 								'access': str(refresh.access_token),
 							}
+							logger.error(f'\n\n\naccess: {response["access"]}\nrefresh: {response["refresh"]}\n\n\n')
 							return Response(response, status=status.HTTP_200_OK)
 						else:
 							# logic to rename username
@@ -105,6 +106,7 @@ def registerUser(request):
 				'refresh': str(refresh),
 				'access': str(refresh.access_token),
 			}
+			logger.error(f'\n\n{response['access']}\n\n')
 			return Response(response, status=status.HTTP_200_OK)
 		else:
 			send_verification_email(user)
@@ -158,6 +160,7 @@ class logoutUser(APIView):
 
 		ref_token = RefreshToken(refresh)
 		ref_token.blacklist()
+		logger.error('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLOGGED OUT\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 		return Response({'message': 'Successfully logged out'})
 
 def auth42(request):
@@ -179,7 +182,6 @@ def getCode(request):
 			"code": code,
 			"redirect_uri": os.getenv('FRONT_IP'), # <.env>
 		}
-		logger.error(data)
 		response = post(token_url, data=data)
 
 
@@ -191,7 +193,7 @@ def getCode(request):
 				"Authorization": bearer,
 			}
 			res = get(token_url, headers=header)
-			logger.error(res)
+
 
 			if res.status_code == 200:
 				res = json.loads(res.text)
@@ -209,7 +211,6 @@ def getCode(request):
 
 				# print(f'\n\n New user: {newUser}\n\n')
 				response = post('http://127.0.0.1:8000/api/auth/register/', json=newUser) # <.env>
-				logger.error(response)
 				# print(f'\n\n status code: {response.status_code}\n\n')
 
 				if response.status_code == 200:

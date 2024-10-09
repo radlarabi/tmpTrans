@@ -19,7 +19,7 @@ urlpatterns = [
 	path('usersList/', GetUsersListView.as_view(), name='UsersList'),
 	path('newGame/', NewGame.as_view(), name='NewGame'),
 	# path('pendingRequest/add/', AddRequestView.as_view(), name='AddRequest'),
-	# path('<str:username>/', ListFriendDetailsView.as_view(), name='ListFriendDetails')
+	path('<str:username>/', ListFriendDetailsView.as_view(), name='ListFriendDetails')
 ]
 
 

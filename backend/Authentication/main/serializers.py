@@ -22,9 +22,13 @@ class UserDetailsSerializer(serializers.ModelSerializer):
 		fields = ('username', 'first_name', 'last_name', 'email', 'avatar', 'game_theme', 'played_games_num', 'points', 'friends', 'blocked')
 
 	def get_avatar(self, obj):
+		logger.error(f'\n\n\n{type(obj.avatar)}\n\n\n')
 		if obj.avatar:
-			# Return the relative path (without the domain)
-			return obj.avatar.url  # Returns 'avatars/profile.jpg'
+			if obj.user42_id:
+				# Return the relative path (without the domain)
+				return obj.avatar.name  # Returns 'avatars/profile.jpg'
+			else:
+				return obj.avatar.url  # Returns 'avatars/profile.jpg'
 		return None
 
 class EditPasswordSerializer(serializers.ModelSerializer):
@@ -51,7 +55,7 @@ class GetFriendInfoSerializer(serializers.ModelSerializer):
 	avatar = AvatarPathField()
 	class Meta:
 		model = CustomUser
-		fields = ('username', 'first_name', 'last_name', 'avatar', 'played_games_num', 'points')
+		fields = ('username', 'first_name', 'last_name', 'avatar', 'played_games_num', 'points', 'wins', 'losts', 'is_online')
 
 
 class NewGameSerializer(serializers.ModelSerializer):

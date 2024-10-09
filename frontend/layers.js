@@ -34,7 +34,7 @@ const HomeContent = async (url) => {
         ${LeftNavBar()}
             ${
                 url === '/dashboard' ? `${await dashboard()}` :
-                url === '/game' ? `${game()}` :
+                url.startsWith('/game') ? `${await game()}` :
                 url === '/leaderboard' ? `${await leaderboard()}` :
                 url === '/settings' ? `${await settings()}` :
                 url.startsWith('/profile') ? `${await profile(url)}` : ''
