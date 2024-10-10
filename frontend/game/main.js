@@ -144,10 +144,7 @@ export function findOpponent () {
 
     const displayWait = document.querySelector(".wait");
     console.log("displayWaitdisplayWaitdisplayWait", displayWait)
-    const displaySection = document.querySelector(".section");
     displayWait.classList.add('display');
-    displaySection.classList.add('display');
-    // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI3OTY1OTE3LCJpYXQiOjE3Mjc4Nzk1MTcsImp0aSI6IjBhOTMzNWM2YzY1ZDQ2MmJiYjZlMmMyOTQ4OTA5NTUwIiwidXNlcl9pZCI6Mn0.k0iwyKCMm84WO-6-_z9F23Usr6MJgEGkE9GUpkedYEQ';
     document.cookie = 'Authorization=' + `Bearer ${getCookie('token')}` + '; path=/'; // Set the token in cookies
     const matchmaking = new WebSocket(
         'ws://' + window.location.hostname + ':8001/ws/wait_for_opponent/'
@@ -203,6 +200,10 @@ export function findOpponent () {
                     let gameCanvas = document.getElementById("gameCanvas");
                     if (section) {
                         const display = document.getElementsByClassName("playerInfo");
+                        document.querySelector('#player1 .username').textContent = data.player.username;
+                        document.querySelector('#player1 .playerImage').src = data.player.avatar;
+                        document.querySelector('#player2 .username').textContent = data.opponent.username;
+                        document.querySelector('#player2 .playerImage').src = data.player.avatar;
                         for (let i = 0; i < display.length; i++) {
                             display[i].classList.add('display');
                         }
@@ -210,7 +211,7 @@ export function findOpponent () {
                         gameCanvas.style.display = 'block';
                         infoPlayers.classList.add('display');
                         gameCanvas.classList.add('block-1');
-                        console.log("start game");
+                        // console.log("start game");
                         startGame(data);
                         }
                 }, 5000);

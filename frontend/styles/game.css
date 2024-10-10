@@ -26,11 +26,10 @@
     z-index: 3;
 }
 
-.box {
-    height: 100%;
-}
 
-.containerGame, .box {
+.box {
+    height: 500px;
+    margin: auto;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -68,7 +67,7 @@
 
 .wait.display h1 {
     color: var(--color-text-light);
-    font-size: 10rem;
+    font-size: 5rem;
     font-family: GUERRILLA-Normal;
 }
 
@@ -242,6 +241,7 @@
 }
 
 .infoPlayers.display {
+    margin: auto;
     display: flex;
     height: 70%;
     justify-content: center;
@@ -256,12 +256,26 @@
 
 .playerInfo.display {
     display: flex;
-    height: 50%;
+    height: 70%;
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
     padding: 1.5rem;
     margin: 0 3rem;
+}
+
+
+.playerInfo .playerImage {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.playerInfo .username{
+    color: var(--color-text-light);
+    font-size: 1.5rem;
+    padding: 20px 0;
+    font-family: GUERRILLA-Normal; 
 }
 
 .game .playerInfo .gamer img {
