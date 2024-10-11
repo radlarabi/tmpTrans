@@ -94,13 +94,18 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def create_player(self, user_data,user_id):
         user_id = user_data.get('user_id')
         username = user_data.get('username')
+        avatar = '/assets/images/default.webp'
+        if user_data.get('avatar'):
+            avatar = user_data.get('avatar')
+        
         try:
             player = await sync_to_async(Player.objects.get)(username=username)
         except Player.DoesNotExist:
-            player = await sync_to_async(Player.objects.get_or_create)(
+            player, created  = await sync_to_async(Player.objects.get_or_create)(
                 username=username,
                 id=user_id,
-                isactive = False
+                defaults={'isactive': False},
+                avatar = avatar
             )
         return player
     
