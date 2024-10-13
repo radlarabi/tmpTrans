@@ -8,7 +8,7 @@ from django.utils import timezone
 logger = logging.getLogger(__name__)
 class RemoteConsumer(AsyncWebsocketConsumer):
     rooms = {}  # Dictionary to hold the game state and loop task for each room
-
+    opponent = None
     async def connect(self):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.username = self.scope["user_data"]["username"]
@@ -39,13 +39,42 @@ class RemoteConsumer(AsyncWebsocketConsumer):
 
         if not room['game_loop_task']:
             room['game_loop_task'] = asyncio.create_task(self.game_loop(self.room_group_name))
-
+ 
+    
+    async def set_opponent(self, opponent):
+        logger.error("seting")
+        self.opponent = opponent
+        
+    async def get_opponent(self):
+        logger.error("geting")
+        return self.opponent
+    
     async def disconnect(self, close_code):
         room = RemoteConsumer.rooms[self.room_group_name]
         room['active_connections'] -= 1
 
-        if room['active_connections'] == 0:
+        if room['active_connections'] < 2:
             room['game_loop_task'].cancel()
+
+            opponent = await self.get_opponent()
+            
+            # Send message to frontend that a player has left the game
+            leave_message = {
+                'type': 'player_left',
+                'message': 'A player has left the game.'
+            }
+            
+            logger.error(f"------1---\n\n\n{opponent}\n\n\n-----1-----")
+            if opponent:
+                
+                await self.channel_layer.group_send(
+                    opponent,
+                    {
+                        'type': 'game.message',
+                        'message': leave_message
+                    }
+                )
+            
             try:
                 await room['game_loop_task']
             except asyncio.CancelledError:
@@ -64,6 +93,8 @@ class RemoteConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         data = json.loads(text_data)
         action = data.get('action')
+        self.oppenet = data.get('oppenet')
+        await self.set_opponent(self.oppenet)
         logger.error(f"\n\n\n---------op----------------{data}-----------------------------\n\n\n")
         if action == 'move_paddle':
             direction = data['direction']
@@ -82,7 +113,7 @@ class RemoteConsumer(AsyncWebsocketConsumer):
         room = RemoteConsumer.rooms[self.room_group_name]
         game_state = room['game_state']
         player2 = self.oppenet
-
+        # self.set_opponent(self.oppenet)
         if game_state['score']['left'] >= 5:
             winner = 'left'
             loser = 'right'   
@@ -190,7 +221,7 @@ class RemoteConsumer(AsyncWebsocketConsumer):
 
     def initialize_game_state(self):
         return {
-            'ball': {'x': 400, 'y': 200, 'vx': 4, 'vy': 4, 'radius': 10},
+            'ball': {'x': 400, 'y': 200, 'vx': 4, 'vy': 4, 'radius': 8},
             'paddles': {
                 'left': {'x': 30, 'y': 150, 'width': 15, 'height': 85, 'vy': 0},
                 'right': {'x': 760, 'y': 150, 'width': 15, 'height': 85, 'vy': 0}
@@ -241,3 +272,11 @@ class RemoteConsumer(AsyncWebsocketConsumer):
         room = RemoteConsumer.rooms[self.room_group_name]
         room['game_loop_task'].cancel()
         # await self.close()
+    async def game_message(self, event):
+        message = event['message']
+        logger.error(f"left form game")
+        # Send the message to WebSocket client
+        await self.send(text_data=json.dumps({
+            'type': 'game.message',
+            'message': message
+        }))
