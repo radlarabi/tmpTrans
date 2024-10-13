@@ -4,6 +4,8 @@ import {callPages, getCookie} from './layers.js';
 import { login } from './pages/login.js';
 import { animatedBackground } from './utils/backgroundAnimation.js';
 import { findOpponent } from './game/main.js'
+import { displayGame } from '../game/localGame.js'
+
 const rootDiv = document.getElementById('root');
 
 const randomData = {
@@ -79,6 +81,9 @@ const router = async (e) => {
     console.log("router called")
     if (window.location.hash == "#/game/findOpponent"){
         findOpponent()
+    }
+    if (window.location.hash == "#/game/localGame"){
+        displayGame()
     }
     setTimeout(() => {
         document.getElementById('loading').style.display = 'none';

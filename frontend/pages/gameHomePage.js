@@ -12,7 +12,7 @@ export async function gameHomePage (){
                             <div class="vsRobot-image">
                                 <div class="vsPlayer-title">Challenge the Machine!</div>
                                 <div class="vsPlayer-subtitle">Test your skills against a formidable opponent!!</div>
-                                <a class="vsRobot-button" href="#/game">Play Vs Ai</a>
+                                <a class="vsRobot-button" href="#/game/localGame">Play Vs Hassan</a>
                             </div>
                         </div>
                     </div>

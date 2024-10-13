@@ -170,7 +170,7 @@ function connectToServer(gameId) {
             modal.style.display = "block";
             
         }
-        console.log(data);
+        // console.log(data);
     };
 }
 
@@ -275,16 +275,17 @@ function startGame() {
 }
 
 
-function displayGame() {
+export function displayGame() {
     const section = document.querySelector(".box");
     const infoPlayers = document.querySelector(".infoPlayers");
     let gameCanvas = document.getElementById("gameCanvas");
+
     if (section) {
         const display = document.getElementsByClassName("playerInfo");
         for (let i = 0; i < display.length; i++) {
             display[i].classList.add('display');
         }
-        section.style.display = 'none';
+        // section.style.display = 'none';
         gameCanvas.style.display = 'block';
         infoPlayers.classList.add('display');
         gameCanvas.classList.add('block-1');
