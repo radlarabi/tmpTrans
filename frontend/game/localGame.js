@@ -18,8 +18,6 @@ function initCanvas() {
         return;
     }
     ctx = canvas.getContext('2d');
-    resizeCanvas(); 
-    window.addEventListener('resize', resizeCanvas);
 }
 
 
@@ -68,48 +66,6 @@ function initBall() {
     };
 }
 
-
-function resizeCanvas() {
-    if (!canvas) return; 
-    console.log("resezing");
-    canvas.width = window.innerWidth * 0.5;
-    canvas.height = window.innerHeight * 0.6;
-
-    if (player) {
-        player.width = canvas.width * 0.02;
-        player.height = canvas.height * 0.15;
-        player.x = canvas.width * 0.02;
-        player.y = (canvas.height - player.height) / 2;
-    }
-
-    if (opponent) {
-        opponent.width = canvas.width * 0.02;
-        opponent.height = canvas.height * 0.15;
-        opponent.x = canvas.width - opponent.width - (canvas.width * 0.02);
-        opponent.y = (canvas.height - opponent.height) / 2;
-    }
-
-    if (ball) {
-        ball.size = canvas.width * 0.01;
-        ball.x = (canvas.width - ball.size) / 2;
-        ball.y = (canvas.height - ball.size) / 2;
-    }
-
-    if (player && opponent && ball && canvas) {
-        connection.send(JSON.stringify({
-            event: 'resize',
-            player: player,
-            opponent: opponent,
-            ball: ball,
-            canvas: {
-                width: canvas.width,
-                height: canvas.height,
-            }
-        }));
-    }
-
-    drawGame();
-}
 
 function drawGame() {
     if (!ctx) return; 
@@ -170,69 +126,78 @@ function connectToServer(gameId) {
             modal.style.display = "block";
             
         }
-        // console.log(data);
     };
 }
 
-
-// function updateGame(data) {
-    
-//     drawGame();
-// }
-
-let dirication ;
-
-function initKeyHandlers() {
-    window.addEventListener("keydown", function (event) {
-        if (event.key === "ArrowUp"){ 
-            keys.ArrowUp = true ;
-            dirication = 'left';
-        };
-        if (event.key === "ArrowDown") {
-            keys.ArrowDown = true;
-            dirication = 'left';
-        }
-        if (event.key === "w") {
-            keys.w = true;
-            dirication = 'right';
-        }
-        if (event.key === "s") {
-            keys.s = true;
-            dirication = 'right';
-        }
-
-        sendMovementUpdate();
-    });
-
-    window.addEventListener("keyup", function (event) {
-        if (event.key === "ArrowUp") keys.ArrowUp = false;
-        if (event.key === "ArrowDown") keys.ArrowDown = false;
-        if (event.key === "w") keys.w = false;
-        if (event.key === "s") keys.s = false;
-
-        sendMovementUpdate();
-    });
-}
-
+// let keys = { ArrowUp: false, ArrowDown: false, w: false, s: false };
+let direction = ''; // To track which player is moving
 
 function sendMovementUpdate() {
-    if (player && opponent && ball && canvas && connection) {
-        console.log(dirication);
-        connection.send(JSON.stringify({
-            event: 'move',
-            player: player,
-            opponent: opponent,
-            dirication:dirication,
-            ball: ball,
-            canvas: {
-                width: canvas.width,
-                height: canvas.height,
-            }
-        }));
+    const data = {};
+    
+    if (keys.ArrowUp) {
+        data['move'] = 'up';
+        data['player'] = 'left'; // Assuming 'ArrowUp' is for the left player
+    } else if (keys.ArrowDown) {
+        data['move'] = 'down';
+        data['player'] = 'left';
+    }
+
+    if (keys.w) {
+        data['move'] = 'up';
+        data['player'] = 'right'; // Assuming 'w' is for the right player
+    } else if (keys.s) {
+        data['move'] = 'down';
+        data['player'] = 'right';
+    }
+
+    if (data['move']) {
+        data['event'] = 'move';
+        console.log("send data to server")
+        connection.send(JSON.stringify(data));
     }
 }
 
+window.addEventListener("keydown", function (event) {
+    if (event.key === "ArrowUp") keys.ArrowUp = true;
+    if (event.key === "ArrowDown") keys.ArrowDown = true;
+    if (event.key === "w") keys.w = true;
+    if (event.key === "s") keys.s = true;
+
+    sendMovementUpdate();
+});
+
+window.addEventListener("keyup", function (event) {
+    if (event.key === "ArrowUp") keys.ArrowUp = false;
+    if (event.key === "ArrowDown") keys.ArrowDown = false;
+    if (event.key === "w") keys.w = false;
+    if (event.key === "s") keys.s = false;
+
+    sendMovementUpdate();
+});
+
+
+
+// function sendMovementUpdate() {
+//     if (player && opponent && ball && canvas && connection) {
+//         console.log(dirication);
+//         connection.send(JSON.stringify({
+//             event: 'move',
+//             player: player,
+//             opponent: opponent,
+//             dirication:dirication,
+//             ball: ball,
+//             canvas: {
+//                 width: canvas.width,
+//                 height: canvas.height,
+//             }
+//         }));
+//     }
+// }
+
 function updateGame(data) {
+
+    console.log(data);
     // Update the player and opponent positions
     if (data.player) {
         player.y = data.player.y;
@@ -267,7 +232,7 @@ function startGame() {
     initCanvas();
     initPlayers();
     initBall();
-    initKeyHandlers();
+    // initKeyHandlers();
     drawGame();
     
     const gameId = "game123";  
