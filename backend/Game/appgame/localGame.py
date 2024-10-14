@@ -47,9 +47,13 @@ class LocalConsumer(AsyncWebsocketConsumer):
         
         if player and movement in ['up', 'down']:
             if movement == 'up':
-                self.game_state[player]['y'] -= 10  # Move up
+                self.game_state[player]['y'] -= 10 # Move up
+                if self.game_state[player]['y'] < 0:
+                    self.game_state[player]['y'] = 0
             elif movement == 'down':
-                self.game_state[player]['y'] += 10  # Move down
+                self.game_state[player]['y'] += 10
+                if self.game_state[player]['y'] +  self.game_state[player]['height'] > 400:
+                    self.game_state[player]['y'] = 400 - self.game_state[player]['height'] # Move down
 
             logger.info(f"Updated {player} position: {self.game_state[player]['y']}")
             await self.send_game_update()  # Ensure this is awaited
@@ -64,14 +68,16 @@ class LocalConsumer(AsyncWebsocketConsumer):
 
     async def game_loop(self):
         while True:
-            await asyncio.sleep(0.003)  # Control the loop speed
+            await asyncio.sleep(0.004)  # Control the loop speed ff
             self.update_ball_position()
             await self.send_game_update()
 
     def update_ball_position(self):
         ball = self.game_state['ball']
         canvas = self.game_state['canvas']
-
+        left_paddle = self.game_state['left']
+        right_paddle = self.game_state['right']
+        
         ball['x'] += ball['dx']
         ball['y'] += ball['dy']
 
@@ -81,6 +87,30 @@ class LocalConsumer(AsyncWebsocketConsumer):
 
         if ball['x'] <= 0 or ball['x'] >= canvas['width']:
             ball['dx'] *= -1
+        
+        if ball['dx'] < 0 and left_paddle['x'] < ball['x'] < left_paddle['x'] + left_paddle['width']:
+            if left_paddle['y'] < ball['y'] < left_paddle['y'] + left_paddle['height']:
+                ball['dx'] = -ball['dx']
+        
+        
+        if ball['dx'] > 0 and right_paddle['x'] < ball['x'] < right_paddle['x'] + right_paddle['width']:
+            if right_paddle['y'] < ball['y'] < right_paddle['y'] + right_paddle['height']:
+                ball['dx'] = -ball['dx']
+        # Ball goes out of bounds (scoring logic can be added here)
+        if ball['x'] <= 0:
+            self.game_state['right']['score'] += 1
+            self.reset_ball_position()
+        elif ball['x'] >= canvas['width']:
+            self.game_state['left']['score'] += 1
+            self.reset_ball_position()
+
+    def reset_ball_position(self):
+        ball = self.game_state['ball']
+        ball['x'] = self.game_state['canvas']['width'] / 2
+        ball['y'] = self.game_state['canvas']['height'] / 2
+        ball['dx'] = 1  
+        ball['dy'] = 1
+
 
     async def send_game_update(self):
         logger.info("Sending game update...")

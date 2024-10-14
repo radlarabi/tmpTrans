@@ -25,8 +25,8 @@ function initCanvas() {
 function initPlayers() {
     if (!canvas) return;  
 
-    const playerWidth = canvas.width * 0.02;
-    const playerHeight = canvas.height * 0.15;
+    const playerWidth = 15;
+    const playerHeight = 85;
     player = {
         x: canvas.width * 0.02,
         y: (canvas.height - playerHeight) / 2,
