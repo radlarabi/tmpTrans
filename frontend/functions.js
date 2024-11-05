@@ -1,3 +1,4 @@
+// import { getProfileAuth } from "./utils/userApis"
 
 function showFlashNotification(message, type, duration = 3000){
 
@@ -411,3 +412,112 @@ async function editProfile ()  {
         console.error(e)
     }
 }
+
+async function createTournament() {
+    console.log("creating tournament")
+    let container = document.getElementById('tournament-creation')
+    if (!container)
+        return
+    container.style.display = 'flex'
+    container.innerHTML = `
+        <div class="tournament-creation-container">
+            <div class="tournament-creation-title">Create Tournament</div>
+            <input type="text" id="tournament-name" class="tournament-creation-input" placeholder="Tournament Name"/>
+            
+            <label for="tournament-start-date">start date</label>
+            <input type="date" id="tournament-start-date" class="tournament-creation-input" placeholder="tournament Start Date"/>    
+            
+            <label for="tournament-end-date">end date</label>
+            <input type="date" id="tournament-end-date" class="tournament-creation-input" placeholder="tournament End Date"/>
+
+            <button class="tournament-creation-button" onclick="submitTournament()">Create</button>
+            <button class="tournament-creation-button" onclick="cancelCreateTournament()">Cancel</button>
+        </div>
+        `
+}
+async function submitTournament() {
+
+    const startDate = document.getElementById("tournament-start-date").value
+    const endDate = document.getElementById("tournament-end-date").value
+    const name = document.getElementById("tournament-name").value
+
+    if (!startDate || !endDate || !name){
+        showFlashNotification("fill all the form", "error")
+        return
+    }
+
+    const body = {
+        name: name,
+        start_date: startDate,
+        end_date: endDate
+    }
+    console.log(body)
+    try {
+        const response = await fetch('http://localhost:8001/api/tournaments/', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body)
+        });
+    
+        if (!response.ok){
+            console.log(await response.json())
+            throw new Error(response.status)
+        }
+        const data = await response.json();
+        showFlashNotification("tournament created", "info")
+        cancelCreateTournament()
+
+        // return data;
+        
+    } catch (error) {
+        console.error(error);
+        // return null
+    }
+
+}
+
+function cancelCreateTournament (){
+    const container  = document.getElementById("tournament-creation")
+    if (!container)
+        return
+
+    container.style.display = 'none'
+}
+
+// async function joinTournament(e){
+
+//     console.log("bhbhhb")
+//     document.querySelector('.tournaments').addEventListener('click', function(event) {
+//         if (event.target.classList.contains('join-tournament-button')) {
+//             const tournamentName = event.target.getAttribute('data-tournament');
+//             console.log(`Button clicked for tournament: ${tournamentName}`);
+//             joinTournament(tournamentName);
+//         }
+//     });
+//     // console.log(el)
+//     return
+//     const user = getProfileAuth()
+//     const id = document.getElementById("")
+    // http://localhost:8001/api/tournaments/Asatir4/register/
+    // try {
+    //     const api = await fetch('http://localhost:8001/api/tournaments/Asatir4/register/', {
+    //         method: "POST",
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: {
+    //             username: user.username
+    //         }
+    //     })
+    //     if(!api.ok){
+    //         console.log(await api.json()) 
+    //         throw new Error(api.statuscode)
+    //     }
+    //     const data = api.json()
+
+    // } catch (error) {
+    //     console.error(error)
+    // }
+// }

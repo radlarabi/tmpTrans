@@ -5,6 +5,8 @@ import { login } from './pages/login.js';
 import { animatedBackground } from './utils/backgroundAnimation.js';
 import { findOpponent } from './game/main.js'
 import { displayGame } from '../game/localGame.js'
+import { tournamentPage } from './pages/tournamentPage.js';
+import { joingTournament } from './utils/userApis.js';
 
 const rootDiv = document.getElementById('root');
 
@@ -82,8 +84,62 @@ const router = async (e) => {
     if (window.location.hash == "#/game/findOpponent"){
         findOpponent()
     }
+    if (window.location.hash == "#/game/tournaments"){
+        // tournamentPage()
+        const tournament = document.querySelector('.tournaments')
+        if (tournament){
+            const button = document.querySelectorAll("#joinTournament")
+            // console.log(button)
+            button.forEach(el => {
+                el.addEventListener("click", (e) => {
+                    // console.log(e.target.getAttribute('data-tournament'))
+                    joingTournament(e.target.getAttribute('data-tournament'))
+                })
+            })
+
+        }
+    }
     if (window.location.hash == "#/game/localGame"){
-        displayGame()
+        document.addEventListener('click', (e) => {
+            if (e.target.id == 'start-game-local'){
+                const player1 = document.getElementById('player1NameAlias').value
+                const player2 = document.getElementById('player2NameAlias').value
+                document.querySelector('.aliasPlayers').remove()
+                document.querySelector('.box').innerHTML += `
+                    <div class="infoPlayers">
+                        <div class="playerInfo" id="player1">
+                            <img src="player1-image.jpg" alt="Player 1" class="playerImage">
+                            <span id="usernamePlayer1"></span>
+                            <span class="score">0</span>
+                        </div> 
+                        <canvas id="gameCanvas" width="800" height="400" ></canvas>
+                        <div class="playerInfo" id="player2">
+                            <img src="player2-image.jpg" alt="Player 2" class="playerImage">
+                            <span id="usernamePlayer2"></span>
+                            <span class="score">0</span>
+                        </div>
+                        <div id="gameOverModal" class="modal">
+                            <div class="modal-content">
+                                <img src ="../images/medal.png">
+                                <h2 id="gameOverMessage"></h2>
+                                <p>Final score:   <span id="opponentScore"></span> - <span id="playerScore"></span></p>
+                                <div class="option">
+                                    <i class="bi bi-box-arrow-left" ></i>
+                                    <i class="bi bi-arrow-clockwise" id="restartButton" ></i>
+                                </div>
+                            </div>
+                        </div>                 
+                    </div>
+                `
+                console.log(':', player1, player2)
+                displayGame(player1, player2)
+                
+            }
+        })
+        // if (document.getElementById('start-game-local').click()){
+        //     // console.log('mlmlmlmlml')
+        // }
+        // displayGame()
     }
     setTimeout(() => {
         document.getElementById('loading').style.display = 'none';

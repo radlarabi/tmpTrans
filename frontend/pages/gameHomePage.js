@@ -32,7 +32,7 @@ export async function gameHomePage (){
                             <div class="tournament-image">
                                 <div class="vsPlayer-title">Create a Tournament !</div>
                                 <div class="vsPlayer-subtitle">Design and manage your ultimate competition!</div>
-                                <a class="vsRobot-button" href="#/game">Start Creating</a>
+                                <a class="vsRobot-button" href="#/game/tournaments">Start Creating</a>
                             </div>
                         </div>
                     </div>

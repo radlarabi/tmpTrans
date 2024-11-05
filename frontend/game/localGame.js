@@ -20,9 +20,7 @@ function initCanvas() {
     ctx = canvas.getContext('2d');
 }
 
-
-
-function initPlayers() {
+function initPlayers(player1, player2) {
     if (!canvas) return;  
 
     const playerWidth = 15;
@@ -33,20 +31,20 @@ function initPlayers() {
         width: playerWidth,
         height: playerHeight,
         color: "#E6FF94",
-        username: "player1",
-        alias: "Player 1",
+        username: player1,
+        alias: player1,
         score: 0,
         keys: keys,
     };
-
+    console.log(player);
     opponent = {
         x: canvas.width - playerWidth - (canvas.width * 0.02),
         y: (canvas.height - playerHeight) / 2,
         width: playerWidth,
         height: playerHeight,
         color: "#FF6347", 
-        username: "opponent",
-        alias: "Player 2",
+        username: player2,
+        alias: player2,
         score: 0,
         keys: keys,
     };
@@ -228,9 +226,9 @@ function updateGame(data) {
 
 
 
-function startGame() {
+function startGame(player1, player2) {
     initCanvas();
-    initPlayers();
+    initPlayers(player1, player2);
     initBall();
     // initKeyHandlers();
     drawGame();
@@ -240,7 +238,7 @@ function startGame() {
 }
 
 
-export function displayGame() {
+export function displayGame(player1, player2) {
     const section = document.querySelector(".box");
     const infoPlayers = document.querySelector(".infoPlayers");
     let gameCanvas = document.getElementById("gameCanvas");
@@ -251,11 +249,14 @@ export function displayGame() {
             display[i].classList.add('display');
         }
         // section.style.display = 'none';
+        document.querySelector('#usernamePlayer1').textContent = player1;
+        document.querySelector('#usernamePlayer2').textContent = player2;
+        
         gameCanvas.style.display = 'block';
         infoPlayers.classList.add('display');
         gameCanvas.classList.add('block-1');
         console.log("start game");
-        startGame();
+        startGame(player1, player2);
     }
 }
 

@@ -303,3 +303,101 @@
     color: var(--color-text-medium);
     font-family: GUERRILLA-Normal;
 }
+
+.aliasPlayers{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    /* width: 100%; */
+}
+.playerAlias{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+#player1NameAlias, #player2NameAlias{
+    border: none;
+    background-color: rgba(140, 140, 140, 0.4);
+    border-radius: 10px;
+}
+
+
+.tournament-container{
+    color: white;
+    position: relative;
+    margin-top: 1rem;
+    width: 100%;
+    height: 100%;
+}
+
+#tournament-creation{
+    position: absolute;
+    /* background-color: black; */
+    background-color: #d9d9d979;
+	backdrop-filter: blur(7px);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 1rem;
+    border-radius: 10px;
+    display: none;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 29rem;
+    height: 25rem;
+    /* font-size: 2rem; */
+}
+
+.tournament-creation-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.tournament-creation-container input{
+    padding: .5rem;
+    margin: .7rem 0;
+    border-radius: 10px;
+    border: none;
+    
+}
+.tournament-creation-button{
+    border: none;
+    padding: .5rem;
+    margin: .3rem 0;
+    border-radius: 10px;
+}
+
+.tournament-items{
+    display: flex;
+    justify-content: space-between;
+    margin: .5rem 0;
+    padding: .5rem;
+
+}
+.tournaments{
+    margin-top: 2rem;
+}
+
+#connections{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    z-index: -1;
+  }
+  
+#connections .shaddow{opacity:0.5;}
+#connections .st0{stroke:var(--bracket-line-shadow);}
+#connections .st1{stroke:var(--bracket-line-color);}
+
+#connections .st0, #connections .st1{
+    fill:none;
+    stroke-width:10;
+    stroke-linejoin:round;
+    stroke-miterlimit:10;
+}
