@@ -37,9 +37,9 @@ export async function tournamentPage() {
             <div class="tournaments">
                 <h3>List of available tournaments</h3>
                 ${
-                    tournaments?.active_tournaments?.map(tournament => `
-                        <div class="tournament-items">
-                            <h2> ${tournament} </h2>
+                    tournaments?.active_tournaments?.map((tournament, index) => `
+                        <div class="tournament-items" style="${index % 2 === 0 ? "background-color: #8c8c8c66" : ""}">
+                            <h2 class="tournament-items-title"> ${tournament} </h2>
                             <button id="joinTournament" data-tournament="${tournament}" > Join </button>
                         </div>
                         `

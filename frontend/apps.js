@@ -102,19 +102,26 @@ const router = async (e) => {
     if (window.location.hash == "#/game/localGame"){
         document.addEventListener('click', (e) => {
             if (e.target.id == 'start-game-local'){
-                const player1 = document.getElementById('player1NameAlias').value
-                const player2 = document.getElementById('player2NameAlias').value
+                const player1 = document.getElementById('player1NameAlias')?.value
+                const player2 = document.getElementById('player2NameAlias')?.value
+                
+                if (!player1 || !player2){
+                    console.log("Players", player1, player2)
+                    showFlashNotification("Please enter both players name", "error")
+                    return
+                }
+                
                 document.querySelector('.aliasPlayers').remove()
-                document.querySelector('.box').innerHTML += `
+                document.querySelector('.box').innerHTML = `
                     <div class="infoPlayers">
                         <div class="playerInfo" id="player1">
-                            <img src="player1-image.jpg" alt="Player 1" class="playerImage">
+                            <img src="assets/avatars/3551739.jpg" alt="Player 1" class="playerImage">
                             <span id="usernamePlayer1"></span>
                             <span class="score">0</span>
                         </div> 
                         <canvas id="gameCanvas" width="800" height="400" ></canvas>
                         <div class="playerInfo" id="player2">
-                            <img src="player2-image.jpg" alt="Player 2" class="playerImage">
+                            <img src="assets/avatars/3551911.jpg" alt="Player 2" class="playerImage">
                             <span id="usernamePlayer2"></span>
                             <span class="score">0</span>
                         </div>
