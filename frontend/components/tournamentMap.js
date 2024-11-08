@@ -2,6 +2,7 @@ export async function tournamentMap(id){
     
     return `
         <div class="tournament-map-container">
+            <div class="tournament-map-title"> Welcome To The Tournament ${id} </div>
             <div class="tournament-map">
                 <div class="tournament-map-items demi-final">
                     <div class="tournament-demi-final-1">
