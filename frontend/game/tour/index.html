@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament Bracket</title>
+    <style>
+        .round {
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .match {
+            margin: 10px 0;
+        }
+        .match button {
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tournament Bracket</h1>
+    <div id="tournament"></div>
+
+    <script>
+        // Initial rounds data for 4 players (2 rounds and final)
+        let roundsData = [
+            [["Player 1", "Player 2"], ["Player 3", "Player 4"]], // Round 1
+            [[null, null]], // Round 2 (semi-final)
+        ];
+
+        // Render the tournament bracket
+        function renderTournament() {
+            const tournamentDiv = document.getElementById('tournament');
+            tournamentDiv.innerHTML = ''; // Clear previous content
+
+            roundsData.forEach((round, roundIndex) => {
+                const roundDiv = document.createElement('div');
+                roundDiv.classList.add('round');
+                roundDiv.innerHTML = `<h2>Round ${roundIndex + 1}</h2>`;
+
+                round.forEach((match, matchIndex) => {
+                    const matchDiv = document.createElement('div');
+                    matchDiv.classList.add('match');
+
+                    if (match[0] !== null && match[1] !== null) {
+                        // Display match with buttons to select a winner
+                        matchDiv.innerHTML = `
+                            <span>${match[0]} vs ${match[1]} [match ${matchIndex + 1}]</span><br>
+                            <button onclick="setWinner(${roundIndex}, ${matchIndex}, '${match[0]}')">${match[0]}</button>
+                            <button onclick="setWinner(${roundIndex}, ${matchIndex}, '${match[1]}')">${match[1]}</button>
+                        `;
+                    } else if (match[0] !== null && roundIndex > 1) {
+                        matchDiv.innerHTML = `<span>Champion: ${match[0]} wins the tournament!</span>`;
+                    }
+                    roundDiv.appendChild(matchDiv);
+                });
+                tournamentDiv.appendChild(roundDiv);
+            });
+        }
+
+        function setWinner(roundIndex, matchIndex, winner) {
+            const nextRound = roundIndex + 1;
+
+            if (!roundsData[nextRound]) {
+                roundsData[nextRound] = [[winner, null]];
+            } else {
+                // Update the next round with the winner
+                roundsData[nextRound][Math.floor(matchIndex / 2)][matchIndex % 2] = winner;
+            }
+            renderTournament();
+        }
+
+        renderTournament();
+    </script>
+</body>
+</html>

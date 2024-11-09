@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes
 from rest_framework.response import Response
 from .utils import pair_players, make_key
 from .models import GameRoom, Player, Tournament, Match, GameHistory, Leaderboard
@@ -16,7 +17,7 @@ def start_game():
 class PlayerViewSet(viewsets.ModelViewSet):
     queryset = Player.objects.all()
     serializer_class = PlayerSerializer
-
+@permission_classes([IsAuthenticated])
 class TournamentViewSet(viewsets.ModelViewSet):
     queryset = Tournament.objects.all()
     serializer_class = TournamentSerializer
@@ -155,7 +156,7 @@ class TournamentViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
+@permission_classes([IsAuthenticated])
 class MatchViewSet(viewsets.ModelViewSet):
     queryset = Match.objects.all()
     serializer_class = MatchSerializer
@@ -189,7 +190,7 @@ class MatchViewSet(viewsets.ModelViewSet):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+@permission_classes([IsAuthenticated])
 class PlayerHistoryView(APIView):
     def get(self, request, *args, **kwargs):
         query_params = request.GET

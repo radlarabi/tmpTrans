@@ -115,9 +115,9 @@ function connectToServer(gameId) {
 
     connection.onmessage = function (e) {
         const data = JSON.parse(e.data);
+        console.log(data);
         updateGame(data);
-        if (data.event === 'game_over') {
-            document.getElementById("gameOverMessage").textContent = data.message;
+        if (data.event === 'over') {
             document.getElementById("playerScore").textContent = data.player.score;
             document.getElementById("opponentScore").textContent = data.opponent.score;
             const modal = document.getElementById("gameOverModal");
@@ -126,9 +126,6 @@ function connectToServer(gameId) {
         }
     };
 }
-
-// let keys = { ArrowUp: false, ArrowDown: false, w: false, s: false };
-let direction = ''; // To track which player is moving
 
 function sendMovementUpdate() {
     const data = {};
@@ -195,7 +192,7 @@ window.addEventListener("keyup", function (event) {
 
 function updateGame(data) {
 
-    console.log(data);
+    // console.log(data);
     // Update the player and opponent positions
     if (data.player) {
         player.y = data.player.y;

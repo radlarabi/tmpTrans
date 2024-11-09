@@ -16,9 +16,11 @@ class TournamentSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'start_date', 'end_date']
     
     def validate(self, data):
+        print(f"----{data}-----",flush=True)
         if data['start_date'] >= data['end_date']:
             raise serializers.ValidationError("The start date must be before the end date.")
         if data['start_date'] < timezone.now():
+            print(f"--{data}--[{timezone.now()}]--",flush=True)
             raise serializers.ValidationError("The start date must be in the future.")
         return data
 
