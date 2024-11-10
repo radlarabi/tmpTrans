@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets, status
@@ -9,28 +8,51 @@ from .models import GameRoom, Player, Tournament, Match, GameHistory, Leaderboar
 from .serializer import PlayerSerializer, TournamentSerializer, MatchSerializer, GameHistorySerializer, LeaderboardSerializer
 import logging
 from django.db import models
+import requests
+from django.utils import timezone
+
 logger = logging.getLogger(__name__)
-# Create your views here.
-def start_game():
-    pass
+
+# def start_game():
+#     pass
+
+def is_token_valid(request):
+    """Helper function to validate JWT token by sending a request to an auth service"""
+    token = request.headers.get('Authorization')
+    if token:
+        token = token.split(" ")[1]  # Extract Bearer token
+        try:
+            # Replace with your actual authentication service URL
+            url = "http://auth:8000/api/profile/details/"
+            headers = {'Authorization': f'Bearer {token}'}
+            response = requests.get(url, headers=headers)
+            if response.status_code == 200:
+                return True
+            else:
+                return False
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Error during token validation: {e}")
+            return False
+    return False
 
 class PlayerViewSet(viewsets.ModelViewSet):
     queryset = Player.objects.all()
     serializer_class = PlayerSerializer
-@permission_classes([IsAuthenticated])
+
 class TournamentViewSet(viewsets.ModelViewSet):
     queryset = Tournament.objects.all()
     serializer_class = TournamentSerializer
-    lookup_field = 'name' 
-    
+    lookup_field = 'name'
+
     def get_queryset(self):
         return super().get_queryset()  # Default behavior
 
     @action(detail=False, methods=['get'])
     def categorize_tournaments(self, request):
+        if not is_token_valid(request):
+            return Response({"error": "Invalid or expired JWT token."}, status=status.HTTP_401_UNAUTHORIZED)
         
         queryset = self.get_queryset()
-
         active_tournaments = []  
         expired_tournaments = [] 
 
@@ -47,25 +69,27 @@ class TournamentViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['post'], url_path='register')
     def register(self, request, name=None):
+        if not is_token_valid(request):
+            return Response({"error": "Invalid or expired JWT token."}, status=status.HTTP_401_UNAUTHORIZED)
+
         try:
             tournament = self.get_object()
             if tournament.is_expired():
                 return Response({"error": "Tournament is expired."}, 
-                                status=status.HTTP_400_BAD_REQUEST)
+                                 status=status.HTTP_400_BAD_REQUEST)
             player = Player.objects.get(username=request.data['username'])
 
             if player.is_in_tournament():
                 return Response({"error": "Player is already part of an active tournament."}, 
-                                status=status.HTTP_400_BAD_REQUEST)
+                                 status=status.HTTP_400_BAD_REQUEST)
 
             if tournament.participants.count() >= 4:
-                # tournament.participants.remove(player)
                 return Response({"error": "Tournament is full. Only 4 participants are allowed."}, 
-                                status=status.HTTP_400_BAD_REQUEST)
+                                 status=status.HTTP_400_BAD_REQUEST)
             tournament.participants.add(player)
             logger.info(f"Player {player.username} registered for tournament {tournament.name}.")
             return Response({"message": f"Player {player.username} registered successfully."}, 
-                            status=status.HTTP_200_OK)
+                             status=status.HTTP_200_OK)
             
         except Player.DoesNotExist:
             logger.error(f"Player with id {request.data['player_id']} not found.")
@@ -77,20 +101,23 @@ class TournamentViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'], url_path='start')
     def start(self, request, name=None):
+        if not is_token_valid(request):
+            return Response({"error": "Invalid or expired JWT token."}, status=status.HTTP_401_UNAUTHORIZED)
+
         try:
             tournament = self.get_object()
             if tournament.is_expired():
                 return Response({"error": "Tournament is expired."}, 
-                                status=status.HTTP_400_BAD_REQUEST)
+                                 status=status.HTTP_400_BAD_REQUEST)
             if tournament.is_arrived():
                 return Response({"error": "The start date has not yet arrived."}, 
-                                status=status.HTTP_400_BAD_REQUEST)
+                                 status=status.HTTP_400_BAD_REQUEST)
             if tournament.participants.count() != 4:
                 return Response({"error": "Not enough participants to start the tournament."}, 
-                                status=status.HTTP_400_BAD_REQUEST)
+                                 status=status.HTTP_400_BAD_REQUEST)
             if tournament.start:
                 return Response({"error": "Tournament has already started."}, 
-                status=status.HTTP_400_BAD_REQUEST)
+                                 status=status.HTTP_400_BAD_REQUEST)
             # Start the tournament
             tournament.start = True
             tournament.save()
@@ -108,15 +135,19 @@ class TournamentViewSet(viewsets.ModelViewSet):
                 )
             logger.info(f"Tournament {tournament.name} started successfully.")
             return Response({"message": f"Tournament {tournament.name} started successfully."}, 
-                            status=status.HTTP_200_OK)
+                             status=status.HTTP_200_OK)
         except Tournament.DoesNotExist:
             logger.error(f"Tournament with id {name} not found.")
             return Response({"error": "Tournament not found."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             logger.error(f"Error starting tournament: {str(e)}")
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
     @action(detail=True, methods=['post'], url_path='next_round')
     def next_round(self, request, name=None):
+        if not is_token_valid(request):
+            return Response({"error": "Invalid or expired JWT token."}, status=status.HTTP_401_UNAUTHORIZED)
+
         try:
             tournament = self.get_object()
             current_round = Match.objects.filter(tournament=tournament).aggregate(models.Max('round_number'))['round_number__max']
@@ -156,13 +187,16 @@ class TournamentViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-@permission_classes([IsAuthenticated])
+
 class MatchViewSet(viewsets.ModelViewSet):
     queryset = Match.objects.all()
     serializer_class = MatchSerializer
 
     @action(detail=True, methods=['post'], url_path='submit_result')
     def submit_result(self, request, pk=None):
+        if not is_token_valid(request):
+            return Response({"error": "Invalid or expired JWT token."}, status=status.HTTP_401_UNAUTHORIZED)
+
         try:
             match = self.get_object()
             winner_username = request.data.get('winner_username')
@@ -189,8 +223,6 @@ class MatchViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-
-@permission_classes([IsAuthenticated])
 class PlayerHistoryView(APIView):
     def get(self, request, *args, **kwargs):
         query_params = request.GET
