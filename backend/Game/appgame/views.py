@@ -10,6 +10,8 @@ import logging
 from django.db import models
 import requests
 from django.utils import timezone
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 logger = logging.getLogger(__name__)
 
@@ -88,6 +90,15 @@ class TournamentViewSet(viewsets.ModelViewSet):
                                  status=status.HTTP_400_BAD_REQUEST)
             tournament.participants.add(player)
             logger.info(f"Player {player.username} registered for tournament {tournament.name}.")
+            channel_layer = get_channel_layer()
+            print(f"Tournament {tournament.name} has started with pairs: {channel_layer.group_send}",flush=True)
+            async_to_sync(channel_layer.group_send)(
+                f"tournament_{tournament.name}",  # Use a unique group for each tournament
+                {
+                    "type": "tournament.start",
+                    "message": f"Tournament {tournament.name} has started with pairs:",
+                },
+            )    
             return Response({"message": f"Player {player.username} registered successfully."}, 
                              status=status.HTTP_200_OK)
             
@@ -133,6 +144,16 @@ class TournamentViewSet(viewsets.ModelViewSet):
                     room_name=make_key(20),
                     round_number=1
                 )
+
+            channel_layer = get_channel_layer()
+            print(f"Tournament {tournament.name} has started with pairs: {pairs}",flush=Tr)
+            async_to_sync(channel_layer.group_send)(
+                f"tournament_{tournament.id}",  # Use a unique group for each tournament
+                {
+                    "type": "tournament.start",
+                    "message": f"Tournament {tournament.name} has started with pairs: {pairs}",
+                },
+            )    
             logger.info(f"Tournament {tournament.name} started successfully.")
             return Response({"message": f"Tournament {tournament.name} started successfully."}, 
                              status=status.HTTP_200_OK)
