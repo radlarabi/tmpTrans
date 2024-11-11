@@ -79,9 +79,9 @@ class TournamentViewSet(viewsets.ModelViewSet):
                                  status=status.HTTP_400_BAD_REQUEST)
             player = Player.objects.get(username=request.data['username'])
 
-            if player.is_in_tournament():
-                return Response({"error": "Player is already part of an active tournament."}, 
-                                 status=status.HTTP_400_BAD_REQUEST)
+            # if player.is_in_tournament():
+            #     return Response({"error": "Player is already part of an active tournament."}, 
+            #                      status=status.HTTP_400_BAD_REQUEST)
 
             if tournament.participants.count() >= 4:
                 return Response({"error": "Tournament is full. Only 4 participants are allowed."}, 
@@ -92,7 +92,7 @@ class TournamentViewSet(viewsets.ModelViewSet):
                              status=status.HTTP_200_OK)
             
         except Player.DoesNotExist:
-            logger.error(f"Player with id {request.data['player_id']} not found.")
+            # logger.error(f"Player with id {request.data['player_id']} not found.")
             return Response({"error": "Player not found."}, status=status.HTTP_404_NOT_FOUND)
         
         except Exception as e:

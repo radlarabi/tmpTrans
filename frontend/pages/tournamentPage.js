@@ -1,6 +1,16 @@
+import { getCookie } from "../layers.js";
+
 const getTournament = async () => {
     try {
-        const response = await fetch('http://localhost:8001/api/tournaments/categorize_tournaments/');
+        const response = await fetch('http://localhost:8001/api/tournaments/categorize_tournaments/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${getCookie('token')}`
+            }
+        });
+        if (response.status === 401){
+
+        }
         if (!response.ok){
             throw new Error(response.status)
         }

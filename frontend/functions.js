@@ -435,6 +435,138 @@ async function createTournament() {
         </div>
         `
 }
+const getTournament = async () => {
+    try {
+        const response = await fetch('http://localhost:8001/api/tournaments/categorize_tournaments/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${getCookie('token')}`
+            }
+        });
+        if (response.status === 401){
+
+        }
+        if (!response.ok){
+            throw new Error(response.status)
+        }
+        const data = await response.json();
+        return data;
+        
+    } catch (error) {
+        console.error(error);
+        return null
+    }
+}
+const getProfileAuth = async () => {
+    // console.log(window.location.hash)
+    if (window.location.hash === "" || window.location.hash === "#/"){
+        return null
+    }
+    try{
+        // console.log("get profile autg")
+        const res = await fetch("http://localhost:8000/api/profile/details/", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
+            }
+        })
+        if (res.status === 401){
+            window.location.hash = '#/login'
+            return
+        }
+        if (!res.ok){
+            throw new Error(res.status)
+        }
+        const data = await res.json()
+
+        return data;
+    }
+    catch(err){
+        // console.error(err)
+        return null;
+    }
+}
+async function tournamentMap(id){
+    
+    return `
+        <div class="tournament-map-container">
+            <div class="tournament-map-title"> Welcome To The Tournament ${id} </div>
+            <div class="tournament-map">
+                <div class="tournament-map-items demi-final">
+                    <div class="tournament-demi-final-1">
+                        <div class="tournament-player-map"> Player 1</div>
+                        <div class="tournament-player-map-score"> 5 </div>
+                    </div>
+                    
+                    <div class="tournament-demi-final-1">
+                        <div class="tournament-player-map"> Player 1</div>
+                        <div class="tournament-player-map-score"> 5 </div>
+                    </div>
+                    <img src="assets/test.svg" alt="bracket" class="bracket-tournament-1 ">
+
+                </div>
+                
+                <div class="tournament-map-items final">
+                    <div class="tournament-final">
+                        <div class="tournament-player-map tournament-final-player-1"> Player 1</div>
+                        <div class="tournament-player-map tournament-final-player-2"> Player 2</div>
+                    </div>
+                </div>
+                
+                <div class="tournament-map-items demi-final">
+                    <div class="tournament-demi-final-2">
+                    <div class="tournament-player-map-score"> 5 </div>
+                        <div class="tournament-player-map"> Player 2</div>
+                    </div>
+
+                    <div class="tournament-demi-final-2">
+                    <div class="tournament-player-map-score"> 5 </div>
+                        <div class="tournament-player-map"> Player 2</div>
+                    </div>
+
+                    <img src="assets/test.svg" alt="bracket" class="bracket-tournament-2 ">
+
+                </div>
+            </div>
+        </div>
+    `
+}
+const joingTournament = async (id) => {
+    console.log("join")
+
+    // return 
+    const user = await getProfileAuth()
+    // const id = document.getElementById("")
+    // http://localhost:8001/api/tournaments/Asatir4/register/
+    try {
+        const api = await fetch(`http://localhost:8001/api/tournaments/${id}/register/`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
+            },
+            body: JSON.stringify({
+                username: user.username
+            })
+        })
+        if(!api.ok){
+            console.log(await api.json()) 
+            throw new Error(api.statuscode)
+        }
+        const data = api.json()
+        console.log(data)
+        console.log("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+        showFlashNotification(`You joined the tournaments ${id}`, "info")
+        console.log(document.querySelector('.tournament-container'))
+        console.log(await tournamentMap(id))
+
+        document.querySelector('.tournament-container').innerHTML = await tournamentMap(id);
+        
+    } catch (error) {
+        console.error(error)
+    }
+} 
 async function submitTournament() {
 
     const startDate = document.getElementById("tournament-start-date").value
@@ -457,6 +589,7 @@ async function submitTournament() {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
             },
             body: JSON.stringify(body)
         });
@@ -468,7 +601,32 @@ async function submitTournament() {
         const data = await response.json();
         showFlashNotification("tournament created", "info")
         cancelCreateTournament()
+        const tournamentContainer = document.querySelector('.tournaments')
 
+        if (tournamentContainer){
+            const tournaments = await getTournament();
+
+            tournamentContainer.innerHTML = `
+                <h3>List of available tournaments</h3>
+                ${
+                    tournaments?.active_tournaments?.map((tournament, index) => `
+                        <div class="tournament-items" style="${index % 2 === 0 ? "background-color: #8c8c8c66" : ""}">
+                            <h2 class="tournament-items-title"> ${tournament} </h2>
+                            <button id="joinTournament" data-tournament="${tournament}" > Join </button>
+                        </div>
+                        `
+                    ).join('')
+                }
+            `
+            const button = document.querySelectorAll("#joinTournament")
+            // console.log(button)
+            button.forEach(el => {
+                el.addEventListener("click", (e) => {
+                    // console.log(e.target.getAttribute('data-tournament'))
+                    joingTournament(e.target.getAttribute('data-tournament'))
+                })
+            })
+        }
         // return data;
         
     } catch (error) {

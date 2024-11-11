@@ -54,19 +54,19 @@ export const getProfileAuth = async () => {
 }
 
 export const joingTournament = async (id) => {
+    console.log("join")
+    // document.querySelector('.tournament-container').innerHTML = await tournamentMap(id);
 
-    document.querySelector('.tournament-container').innerHTML = await tournamentMap(id);
-
-    return 
+    // return 
     const user = await getProfileAuth()
     // const id = document.getElementById("")
     // http://localhost:8001/api/tournaments/Asatir4/register/
-
     try {
         const api = await fetch(`http://localhost:8001/api/tournaments/${id}/register/`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getCookie('token')}`
             },
             body: JSON.stringify({
                 username: user.username
@@ -77,7 +77,13 @@ export const joingTournament = async (id) => {
             throw new Error(api.statuscode)
         }
         const data = api.json()
+        // console.log(data)
+        // console.log("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+        showFlashNotification(`You joined the tournaments ${id}`, "info")
+        // console.log(document.querySelector('.tournament-container'))
+        // console.log(await tournamentMap(id))
 
+        document.querySelector('.tournament-container').innerHTML = await tournamentMap(id);
     } catch (error) {
         console.error(error)
     }
